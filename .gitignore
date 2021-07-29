@@ -58,3 +58,8 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+Unity3D/Assets/Plugins/Android/*.jar
+Unity3D/Assets/Plugins/Android/*.jar.meta
+Unity3D/Assets/Plugins/Android/*.aar
+Unity3D/Assets/Plugins/Android/*.aar.meta
+
