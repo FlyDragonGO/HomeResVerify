@@ -1,0 +1,3 @@
+[submodule "Unity3D/Assets/DragonSDK"]
+	path = Unity3D/Assets/DragonSDK
+	url = git@github.com:FlyDragonGO/UnityDragonSDK.git
