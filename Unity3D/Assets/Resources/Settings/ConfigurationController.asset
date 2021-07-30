@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d07093313ce544f489b442c8462a6f6f, type: 3}
+  m_Name: ConfigurationController
+  m_EditorClassIdentifier: 
+  version: 1
+  API_Config_Class_Name: 
+  API_Server_URL_Release: https://hotel-frenzy-api.techvisionjoy.com
+  API_Server_Secret_Release: Aji5yUcyJsUUSb2Yb4q5ume2Smv050Q08Db9RDiO
+  API_Server_Timeout_Release: 15
+  API_Server_URL_Beta: https://hotel3-api-alpha.dragonplus.com
+  API_Server_Secret_Beta: foobar
+  API_Server_Timeout_Beta: 15
+  Socket_IO_Enabled: 0
+  Res_Server_URL_Release: http://res.techvisionjoy.com/hotelfrenzy/
+  Res_Server_URL_Beta: http://res.starcdn.cn/hotelfrenzy/
+  AndroidKeyStoreUseConfiguration: 1
+  AndroidKeyStorePath: /Users/dragonplus/techvision.keystore
+  AndroidKeyStorePass: TechVision123
+  AndroidKeyStoreAlias: techvision.keystore
+  AndroidKeyStoreAliasPass: TechVision123
+  _AesKey: 
+  _RC4Key: 
+  kUserPermissionLoginToken: 1
+  kUserPermissionBasicInfo: 1
+  kUserPermissionPublish: 0
+  kUserPermissionFriendList: 1
+  iOSAddPushNotification: 1
+  iOSAddSignInWithApple: 1
+  AESToolPath: /Assets/DragonSDK/DragonU3DSDK/.Tools/AESRelease
+  UPDATE_URL: https://app.adjust.com/qi6rpy2
+  PrivacyPolicyURL: https://www.techvisionjoy.com/privacypolicy/
+  DebugBuildAppBundle: 0
+  ReleaseBuildAppBundle: 0

@@ -1,5 +1,12 @@
+using System;
 using System.Collections.Generic;
+using DragonU3DSDK;
+using DragonU3DSDK.Asset;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
+using UnityEngine.U2D;
+using UnityEngine.UI;
 
 namespace HomeResVerify
 {
@@ -12,6 +19,25 @@ namespace HomeResVerify
     {
         private GameObject UIRoot;
         private Dictionary<string, GameObject> ui = new Dictionary<string, GameObject>();
+        
+        private void Start()
+        {
+            SpriteAtlasManager.atlasRequested += OnLoadAtlas;
+        }
+
+
+        private void OnDestroy()
+        {
+            SpriteAtlasManager.atlasRequested -= OnLoadAtlas;
+        }
+        
+        private void OnLoadAtlas(string atlasName, Action<SpriteAtlas> act)
+        {
+            string path = $"SpriteAtlas/{atlasName}/hd/{atlasName}";
+            var sa =ResourcesManager.Instance.LoadResource<SpriteAtlas>(path);
+            if (sa == null) Debug.LogError($"图集加载失败：{path}");
+            act(sa);
+        }
         
         public void Init()
         {
@@ -43,6 +69,22 @@ namespace HomeResVerify
             {
                 ui.Remove(name);
                 GameObject.DestroyImmediate(instance);
+            }
+        }
+
+        private void Update()
+        {
+            if (Screen.width > Screen.height)
+            {
+                CanvasScaler canvasScaler = UIRoot.transform.Find("Canvas").GetComponent<CanvasScaler>();
+                canvasScaler.referenceResolution = new Vector2(1365, 768);
+                canvasScaler.matchWidthOrHeight = 1;
+            }
+            else
+            {
+                CanvasScaler canvasScaler = UIRoot.transform.Find("Canvas").GetComponent<CanvasScaler>();
+                canvasScaler.referenceResolution = new Vector2(768, 1365);
+                canvasScaler.matchWidthOrHeight = 0;
             }
         }
     }

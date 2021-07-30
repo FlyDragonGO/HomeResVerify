@@ -1,0 +1,7 @@
+{
+	"Version": "v0_0_10000",
+	"ResGroups": {},
+	"UniqueID": "8edf8bf1ab0d4bc98d00ab331420670c",
+	"UnityVersion": "2019.4.24f1c1",
+	"ResPublicLibraryCommits": []
+}
