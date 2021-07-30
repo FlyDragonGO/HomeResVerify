@@ -49,6 +49,8 @@ namespace HomeResVerify
         public void OpenUI<T>(params object[] objs)
             where T : UIBase
         {
+            CloseUI<T>();
+            
             string name = typeof(T).ToString();
             name = name.Substring(name.LastIndexOf(".") + 1);
             string path = $"Prefabs/UI/{name}";

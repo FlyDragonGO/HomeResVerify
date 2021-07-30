@@ -10,6 +10,7 @@ namespace HomeResVerify
         public RoomItemCfg RoomItemCfg;
 
         public GameObject Instance;
+        public Animator animator;
         
         public RoomItem(RoomNode roomNode, RoomItemCfg cfg)
         {
@@ -25,6 +26,29 @@ namespace HomeResVerify
             }
 
             Instance = GameObject.Instantiate(prefab, roomNode.root.transform);
+            
+            Transform oneChild = Instance.transform.Find("01");
+            if (null != oneChild)
+            {
+                foreach (var effect in cfg.animItemCfg.effects)
+                {
+                    GameObject effectPrefab = ResourcesManager.Instance.LoadResource<GameObject>($"Prefabs/effect/{effect.prefabName}");
+                    if (null == effectPrefab) continue;
+                    GameObject effectObj = GameObject.Instantiate(effectPrefab);
+                    effectObj.name = effect.objectName;
+                    effectObj.transform.SetParent(oneChild);
+                    effectObj.transform.Reset();
+                    effect.Cover(effectObj.transform);
+                }
+            }
+            
+            if (!string.IsNullOrEmpty(cfg.animItemCfg.controller))
+            {
+                animator = Instance.GetComponent<Animator>();
+                if(animator == null) animator = Instance.AddComponent<Animator>();
+                animator.runtimeAnimatorController =  ResourcesManager.Instance.LoadResource<RuntimeAnimatorController>(
+                    $"Animations/{cfg.animItemCfg.controller}", false, true, cfg.animItemCfg.controller);
+            }
         }
 
         public void Destory()
@@ -41,6 +65,11 @@ namespace HomeResVerify
                 if (collider.OverlapPoint(worldPos)) return true;
             }
             return false;
+        }
+
+        public void PlayAnimation(string name)
+        {
+            animator?.Play(name);
         }
     }
 }

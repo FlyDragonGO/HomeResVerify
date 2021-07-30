@@ -40,7 +40,7 @@ namespace HomeResVerify
             $"prefabs/effect.ab",
             $"prefabs/room/room{{0}}.ab",
             $"spriteatlas/{{0}}/hd.ab",
-            $"spriteatlas/icon{{0}}/hd.ab"
+            //$"spriteatlas/icon{{0}}/hd.ab"
         };
         private string[] ResGroup =
         {
@@ -51,7 +51,7 @@ namespace HomeResVerify
             "Scene",
             "Scene",
             "SpriteAtlas",
-            "SpriteAtlas"
+            //"SpriteAtlas"
         };
         
         public override void Init(params object[] objs)
