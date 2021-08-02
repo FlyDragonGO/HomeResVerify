@@ -21,8 +21,8 @@ MonoBehaviour:
   API_Server_Secret_Beta: foobar
   API_Server_Timeout_Beta: 15
   Socket_IO_Enabled: 0
-  Res_Server_URL_Release: http://res.techvisionjoy.com/hotelfrenzy/
-  Res_Server_URL_Beta: http://res.starcdn.cn/hotelfrenzy/
+  Res_Server_URL_Release: http://res.starcdn.cn/NewHomeRoom2DRes/
+  Res_Server_URL_Beta: http://res.starcdn.cn/NewHomeRoom2DRes/
   AndroidKeyStoreUseConfiguration: 1
   AndroidKeyStorePath: /Users/dragonplus/techvision.keystore
   AndroidKeyStorePass: TechVision123

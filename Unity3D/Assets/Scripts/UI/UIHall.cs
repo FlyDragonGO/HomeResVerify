@@ -203,7 +203,7 @@ namespace HomeResVerify
                     UIManager.Instance.OpenUI<UIMessage>($"无法下载：{versionUrl}");
                     return;
                 }
-                VersionManager.Instance.CreateFile(FilePathTools.persistentDataPath_Platform, "Version.txt", value);
+                CreateFile(FilePathTools.persistentDataPath_Platform, "Version.txt", value);
                 
                 downLoadState = DownLoadState.success;
             });
@@ -228,8 +228,7 @@ namespace HomeResVerify
                 int resCount = needDownloadFiles.Count;
                 foreach (KeyValuePair<string, string> kv in needDownloadFiles)
                 {
-                    DownloadInfo info = DownloadManager.Instance.DownloadInSecondsWithUrl(kv.Key, kv.Value, 
-                        $"http://res.starcdn.cn/NewHomeRoom2DRes/{FilePathTools.targetName}/{lastCommit}/v10000_0_1/{kv.Key}",
+                    DownloadInfo info = DownloadManager.Instance.DownloadInSeconds($"{lastCommit}/v10000_0_1", kv.Key, kv.Value,
                         (downloadinfo) =>
                     {
                         if (downloadinfo.result == DownloadResult.Success)
@@ -332,6 +331,26 @@ namespace HomeResVerify
             if (File.Exists(localPath)) localMd5 = AssetUtils.BuildFileMd5(localPath);
             if (!localMd5.Equals(remoteMd5)) return 2;
             return 1;
+        }
+        
+        private void CreateFile(string path, string filename, string info)
+        {
+            StreamWriter sw;
+            FileInfo t = new FileInfo(path + "/" + filename);
+            DirectoryInfo dir = t.Directory;
+            if (!dir.Exists)
+            {
+                dir.Create();
+            }
+
+            sw = t.CreateText();
+            Debug.Log("write version:" + t);
+            //以行的形式写入信息
+            sw.WriteLine(info);
+            //关闭流
+            sw.Close();
+            //销毁流
+            sw.Dispose();
         }
     }
 }

@@ -23,6 +23,8 @@ namespace HomeResVerify
     
         private void Start()
         {
+            SRDebug.Init();
+            
             UIManager.Instance.Init();
             UIManager.Instance.OpenUI<UIHall>();
         }
