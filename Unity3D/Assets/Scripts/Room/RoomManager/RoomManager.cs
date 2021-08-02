@@ -75,9 +75,10 @@ namespace HomeResVerify
         }
         private void ResetCamera()
         {
-            int designSizeIndex = PlayerPrefs.GetInt("DesignSizesIndex");
+            int designSizeIndex = PlayerPrefs.GetInt(UIHall.DesignSizesIndexKey);
             float size  = CalculateOrthographicSize(RoomConst.DesignSizes[designSizeIndex].x, RoomConst.DesignSizes[designSizeIndex].y);
             Camera.main.orthographicSize = size;
+            Camera.main.transform.position = new Vector3(0.0f, 0.0f, -50.0f);
         }
         private float CalculateOrthographicSize(float width, float height)
         {

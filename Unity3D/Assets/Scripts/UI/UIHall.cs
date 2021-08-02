@@ -27,11 +27,12 @@ namespace HomeResVerify
         public const string RoomIdKey = "RoomIdKey";
         public const string DesignSizesIndexKey = "DesignSizesIndexKey";
         public const string ProjectNameIndexKey = "ProjectNameIndexKey";
+        public const string ResTypeIndexKey = "ResTypeIndexKey";
         
         private string ResPubLibraryCommitUrl { get { return $"http://res.starcdn.cn/NewHomeRoom2DRes/{FilePathTools.targetName}/ResPubLibraryCommit.json";} }
         private string VersionURL { get { return $"http://res.starcdn.cn/NewHomeRoom2DRes/{FilePathTools.targetName}/{{0}}/Version.10000.txt"; } }
 
-        private string[] ResPath = 
+        private string[] ResTexPaths = 
         {
             $"configs/room/room{{0}}.ab",
             $"animations.ab",
@@ -42,7 +43,7 @@ namespace HomeResVerify
             $"spriteatlas/{{0}}/hd.ab",
             //$"spriteatlas/icon{{0}}/hd.ab"
         };
-        private string[] ResGroup =
+        private string[] ResTexGroups =
         {
             "Data",
             "Scene",
@@ -52,6 +53,17 @@ namespace HomeResVerify
             "Scene",
             "SpriteAtlas",
             //"SpriteAtlas"
+        };
+        
+        private string[] ResSpinePaths = 
+        {
+            $"configs/room/room{{0}}.ab",
+            $"prefabs/room/room{{0}}.ab",
+        };
+        private string[] ResSpineGroups =
+        {
+            "Data",
+            "Scene",
         };
         
         public override void Init(params object[] objs)
@@ -66,12 +78,22 @@ namespace HomeResVerify
             foreach (var p in RoomConst.DesignSizesName) designSizeDropdown.options.Add(new Dropdown.OptionData(p));
             designSizeDropdown.value = PlayerPrefs.GetInt(DesignSizesIndexKey);
             designSizeDropdown.onValueChanged.AddListener((a) => { PlayerPrefs.SetInt(DesignSizesIndexKey, a); });
+            Vector2Int DesignSizes = RoomConst.DesignSizes[designSizeDropdown.value];
+            if (DesignSizes.x > DesignSizes.y) Screen.orientation = ScreenOrientation.Landscape;
+            else Screen.orientation = ScreenOrientation.Portrait;
             
             Dropdown projectNameDropdown = transform.Find("Root/ProjectName/Dropdown").GetComponent<Dropdown>();
             projectNameDropdown.options.Clear();
             foreach (var p in RoomConst.ProjectName) projectNameDropdown.options.Add(new Dropdown.OptionData(p));
             projectNameDropdown.value = PlayerPrefs.GetInt(ProjectNameIndexKey);
             projectNameDropdown.onValueChanged.AddListener((a) => { PlayerPrefs.SetInt(ProjectNameIndexKey, a); });
+
+            Dropdown resTypeDropdown = transform.Find("Root/ResType/Dropdown").GetComponent<Dropdown>();
+            resTypeDropdown.options.Clear();
+            resTypeDropdown.options.Add(new Dropdown.OptionData("图片"));
+            resTypeDropdown.options.Add(new Dropdown.OptionData("Spine"));
+            resTypeDropdown.value = PlayerPrefs.GetInt(ResTypeIndexKey);
+            resTypeDropdown.onValueChanged.AddListener((a) => { PlayerPrefs.SetInt(ResTypeIndexKey, a); });
             
             transform.Find("Root/Load").GetComponent<Button>().onClick.AddListener(LoadOnClick);
         }
@@ -138,11 +160,21 @@ namespace HomeResVerify
             string localVersionPath = string.Format("{0}/{1}", FilePathTools.persistentDataPath_Platform, "Version.txt");
             return File.Exists(localVersionPath);
         }
+
+        private string[] ResPaths()
+        {
+            return PlayerPrefs.GetInt(ResTypeIndexKey) == 0 ? ResTexPaths : ResSpinePaths;
+        }
+
+        private string[] ResGroups()
+        {
+            return PlayerPrefs.GetInt(ResTypeIndexKey) == 0 ? ResTexGroups : ResSpineGroups;
+        }
         
         private List<string> ResReady(int roomId)
         {
             List<string> lacks = new List<string>();
-            foreach (var p in ResPath)
+            foreach (var p in ResPaths())
             {
                 string resPath = string.Format(p, roomId);
                 string localPath = Path.Combine(Application.persistentDataPath, "DownLoad", FilePathTools.targetName, resPath);
@@ -214,12 +246,12 @@ namespace HomeResVerify
             
             #region download res
             Dictionary<string, string> needDownloadFiles = new Dictionary<string, string>();
-            for (int i = 0; i < ResPath.Length; i++)
+            for (int i = 0; i < ResPaths().Length; i++)
             {
-                string resPath = string.Format(ResPath[i], roomId);
-                int resState = ResNeedDown(resPath, ResGroup[i], VersionManager.Instance.GetLocalVersion());
+                string resPath = string.Format(ResPaths()[i], roomId);
+                int resState = ResNeedDown(resPath, ResGroups()[i], VersionManager.Instance.GetLocalVersion());
                 if(0 == resState) yield break;
-                if (2 == resState) needDownloadFiles.Add(resPath, VersionManager.Instance.GetLocalVersion().GetAssetBundleMd5(ResGroup[i], resPath));
+                if (2 == resState) needDownloadFiles.Add(resPath, VersionManager.Instance.GetLocalVersion().GetAssetBundleMd5(ResGroups()[i], resPath));
             }
             List<DownloadInfo> allTask = new List<DownloadInfo>();
             bool ResourceCheckedOver = false;
