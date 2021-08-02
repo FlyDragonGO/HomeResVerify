@@ -74,6 +74,19 @@ namespace HomeResVerify
             }
         }
 
+        public T GetUI<T>()
+            where T : UIBase
+        {
+            string name = typeof(T).ToString();
+            name = name.Substring(name.LastIndexOf(".") + 1);
+            GameObject instance;
+            if (ui.TryGetValue(name, out instance))
+            {
+                return instance.GetComponent<T>();
+            }
+            return null;
+        }
+
         private void Update()
         {
             if (Screen.width > Screen.height)

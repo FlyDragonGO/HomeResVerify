@@ -11,6 +11,8 @@ namespace HomeResVerify
         public GameObject root;
         public List<RoomNode> RoomNodes = new List<RoomNode>();
         
+        private GameObject cleanInstance;
+        
         public Room(int roomId)
         {
             RoomId = roomId;
@@ -30,6 +32,8 @@ namespace HomeResVerify
         {
             foreach (var node in RoomNodes) node.Destory();
             RoomNodes.Clear();
+            
+            CloseClean();
             
             GameObject.DestroyImmediate(root);
             root = null;
@@ -61,6 +65,26 @@ namespace HomeResVerify
             }
 
             return selectedNode;
+        }
+        
+        
+
+        public void ViewWClean()
+        {
+            CloseClean();
+            
+            string prefabPath = $"Prefabs/Room/Room{RoomId}/room2d_Room{RoomId}_clean";
+            GameObject prefab = ResourcesManager.Instance.LoadResource<GameObject>(prefabPath);
+            if (null == prefab) Debug.LogError($"找不到 : {prefabPath}");
+            else cleanInstance = GameObject.Instantiate(prefab, root.transform);
+            
+        }
+        
+        public void CloseClean()
+        {
+            if (null == cleanInstance) return;
+            GameObject.DestroyImmediate(cleanInstance);
+            cleanInstance = null;
         }
     }
 }

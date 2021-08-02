@@ -40,14 +40,14 @@ namespace HomeResVerify
             controller.SetActive(!controller.activeSelf);
         }
 
-        private void ViewNormal()
+        public void ViewNormal()
         {
             CloseNodeProperty();
             RoomManager.Instance.ViewHide();
             RoomManager.Instance.ViewNormal();
         }
 
-        private void ViewOld()
+        public void ViewOld()
         {
             CloseNodeProperty();
             RoomManager.Instance.ViewHide();

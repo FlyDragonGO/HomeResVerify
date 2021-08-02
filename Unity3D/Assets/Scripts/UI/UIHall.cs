@@ -77,10 +77,8 @@ namespace HomeResVerify
             designSizeDropdown.options.Clear();
             foreach (var p in RoomConst.DesignSizesName) designSizeDropdown.options.Add(new Dropdown.OptionData(p));
             designSizeDropdown.value = PlayerPrefs.GetInt(DesignSizesIndexKey);
-            designSizeDropdown.onValueChanged.AddListener((a) => { PlayerPrefs.SetInt(DesignSizesIndexKey, a); });
-            Vector2Int DesignSizes = RoomConst.DesignSizes[designSizeDropdown.value];
-            if (DesignSizes.x > DesignSizes.y) Screen.orientation = ScreenOrientation.Landscape;
-            else Screen.orientation = ScreenOrientation.Portrait;
+            designSizeDropdown.onValueChanged.AddListener((a) => { DesignSizeChange(a); });
+            DesignSizeChange(designSizeDropdown.value);
             
             Dropdown projectNameDropdown = transform.Find("Root/ProjectName/Dropdown").GetComponent<Dropdown>();
             projectNameDropdown.options.Clear();
@@ -98,6 +96,15 @@ namespace HomeResVerify
             transform.Find("Root/Load").GetComponent<Button>().onClick.AddListener(LoadOnClick);
         }
 
+        private void DesignSizeChange(int index)
+        {
+            PlayerPrefs.SetInt(DesignSizesIndexKey, index);
+            Dropdown designSizeDropdown = transform.Find("Root/DesignSize/Dropdown").GetComponent<Dropdown>();
+            Vector2Int DesignSizes = RoomConst.DesignSizes[designSizeDropdown.value];
+            if (DesignSizes.x > DesignSizes.y) Screen.orientation = ScreenOrientation.Landscape;
+            else Screen.orientation = ScreenOrientation.Portrait;
+        }
+        
         private void LoadOnClick()
         {
             int roomId = GetRoomId();

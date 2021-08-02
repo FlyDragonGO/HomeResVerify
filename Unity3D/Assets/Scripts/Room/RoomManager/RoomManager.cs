@@ -20,9 +20,11 @@ namespace HomeResVerify
 
         public void Exit()
         {
+            if (null == room) return;
+            
             room.Destory();
             room = null;
-            
+
             UIManager.Instance.CloseUI<UIRoom>();
             UIManager.Instance.OpenUI<UIHall>();
         }
