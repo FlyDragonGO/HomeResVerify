@@ -94,6 +94,7 @@ namespace HomeResVerify
             resTypeDropdown.onValueChanged.AddListener((a) => { PlayerPrefs.SetInt(ResTypeIndexKey, a); });
             
             transform.Find("Root/Load").GetComponent<Button>().onClick.AddListener(LoadOnClick);
+            transform.Find("Root/Version").GetComponent<Text>().text = $"v.{Application.version}";
         }
 
         private void DesignSizeChange(int index)
