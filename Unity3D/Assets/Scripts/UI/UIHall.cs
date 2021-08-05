@@ -41,6 +41,7 @@ namespace HomeResVerify
             $"prefabs/effect.ab",
             $"prefabs/room/room{{0}}.ab",
             $"spriteatlas/{{0}}/hd.ab",
+            $"spriteatlas/{{0}}/sd.ab",
             //$"spriteatlas/icon{{0}}/hd.ab"
         };
         private string[] ResTexGroups =
@@ -51,6 +52,7 @@ namespace HomeResVerify
             "Scene",
             "Scene",
             "Scene",
+            "SpriteAtlas",
             "SpriteAtlas",
             //"SpriteAtlas"
         };
