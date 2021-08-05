@@ -146,6 +146,7 @@ namespace HomeResVerify
                     yield return StartCoroutine(VersionManager.Instance.LoadLocalVersionFile(() => { }));
                     EnterRoom(roomId);
                 }
+                /*
                 else
                 {
                     string str = "缺少资源：";
@@ -155,6 +156,7 @@ namespace HomeResVerify
                     }
                     UIManager.Instance.OpenUI<UIMessage>(str);
                 }
+                */
             }
         }
 
@@ -207,7 +209,7 @@ namespace HomeResVerify
                 if (!state)
                 {
                     downLoadState = DownLoadState.fail;
-                    UIManager.Instance.OpenUI<UIMessage>($"无法下载：{ResPubLibraryCommitUrl}");
+                    UIManager.Instance.OpenUI<UIMessage>($"无法下载：\r\n{ResPubLibraryCommitUrl}。\r\n可能是网络原因，请多次尝试。");
                     return;
                 }
                 var table = JsonConvert.DeserializeObject<Hashtable>(value);
@@ -240,7 +242,7 @@ namespace HomeResVerify
                 if (!state)
                 {
                     downLoadState = DownLoadState.fail;
-                    UIManager.Instance.OpenUI<UIMessage>($"无法下载：{versionUrl}");
+                    UIManager.Instance.OpenUI<UIMessage>($"无法下载：\r\n{versionUrl}。\r\n可能是网络原因，请多次尝试。");
                     return;
                 }
                 CreateFile(FilePathTools.persistentDataPath_Platform, "Version.txt", value);
@@ -253,6 +255,27 @@ namespace HomeResVerify
             #endregion
             
             #region download res
+            List<string> lackRes = new List<string>();
+            for (int i = 0; i < ResPaths().Length; i++)
+            {
+                string resPath = string.Format(ResPaths()[i], roomId);
+                if (string.IsNullOrEmpty(VersionManager.Instance.GetLocalVersion()
+                    .GetAssetBundleMd5(ResGroups()[i], resPath)))
+                {
+                    lackRes.Add(resPath);
+                }
+            }
+            if (lackRes.Count > 0)
+            {
+                string lackStr = "";
+                foreach (var lackRe in lackRes)
+                {
+                    lackStr += lackRe + "\r\n";
+                }
+                UIManager.Instance.OpenUI<UIMessage>($"公共库缺少资源：\r\n{lackStr}");
+                yield break;
+            }
+            
             Dictionary<string, string> needDownloadFiles = new Dictionary<string, string>();
             for (int i = 0; i < ResPaths().Length; i++)
             {
@@ -283,7 +306,7 @@ namespace HomeResVerify
                         {
                             if (downloadinfo.result != DownloadResult.ForceAbort)
                             {
-                                UIManager.Instance.OpenUI<UIMessage>($"无法下载：{kv.Key}");
+                                UIManager.Instance.OpenUI<UIMessage>($"无法下载：\r\n{kv.Key}。\r\n可能是网络原因，请多次尝试。");
                             }
                         }
                     });
@@ -361,11 +384,7 @@ namespace HomeResVerify
         private int ResNeedDown(string path, string group, VersionInfo versionInfo)
         {
             string remoteMd5 = versionInfo.GetAssetBundleMd5(group, path);
-            if (string.IsNullOrEmpty(remoteMd5))
-            {
-                UIManager.Instance.OpenUI<UIMessage>($"服务器缺少资源：{path}");
-                return 0;
-            }
+            if (string.IsNullOrEmpty(remoteMd5)) return 0;
             string localPath = Path.Combine(Application.persistentDataPath, "DownLoad", FilePathTools.targetName, path);
             string localMd5 = "";
             if (File.Exists(localPath)) localMd5 = AssetUtils.BuildFileMd5(localPath);
