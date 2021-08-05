@@ -24,6 +24,7 @@ namespace HomeResVerify
         private void Start()
         {
             SRDebug.Init();
+            SRDebug.Instance.LoadPinnedFromPlayerPrefs();
             
             UIManager.Instance.Init();
             UIManager.Instance.OpenUI<UIHall>();

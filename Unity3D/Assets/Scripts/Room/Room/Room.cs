@@ -1,6 +1,9 @@
 using System.Collections.Generic;
+using System.IO;
 using DragonU3DSDK.Asset;
+using DragonU3DSDK.Network.API.Protocol;
 using UnityEngine;
+using File = System.IO.File;
 
 namespace HomeResVerify
 {
@@ -11,7 +14,7 @@ namespace HomeResVerify
         public GameObject root;
         public List<RoomNode> RoomNodes = new List<RoomNode>();
         
-        private GameObject cleanInstance;
+        private List<GameObject> cleanInstances = new List<GameObject>();
         
         public Room(int roomId)
         {
@@ -66,25 +69,34 @@ namespace HomeResVerify
 
             return selectedNode;
         }
-        
-        
 
         public void ViewWClean()
         {
             CloseClean();
-            
-            string prefabPath = $"Prefabs/Room/Room{RoomId}/room2d_Room{RoomId}_clean";
-            GameObject prefab = ResourcesManager.Instance.LoadResource<GameObject>(prefabPath);
-            if (null == prefab) Debug.LogError($"找不到 : {prefabPath}");
-            else cleanInstance = GameObject.Instantiate(prefab, root.transform);
-            
+
+            string cleanNameFormat = $"room2d_Room{RoomId}_clean".ToLower();
+            AssetBundle ab = ResourcesManager.Instance.AssetBundleCache.GetAssetBundle($"Prefabs/Room/Room{RoomId}.ab".ToLower());
+            List<string> prefabClean = new List<string>();
+            foreach (var p in ab.GetAllAssetNames())
+            {
+                string name = Path.GetFileNameWithoutExtension(p);
+                if(name.IndexOf(cleanNameFormat) == 0) prefabClean.Add(name);
+            }
+
+            foreach (var p in prefabClean)
+            {
+                string prefabPath = $"Prefabs/Room/Room{RoomId}/{p}";
+                GameObject prefab = ResourcesManager.Instance.LoadResource<GameObject>(prefabPath);
+                if (null == prefab) Debug.LogError($"找不到 : {prefabPath}");
+                else cleanInstances.Add(GameObject.Instantiate(prefab, root.transform));
+            }
         }
         
         public void CloseClean()
         {
-            if (null == cleanInstance) return;
-            GameObject.DestroyImmediate(cleanInstance);
-            cleanInstance = null;
+            if (cleanInstances.Count == 0) return;
+            foreach (var p in cleanInstances) GameObject.DestroyImmediate(p);
+            cleanInstances.Clear();
         }
     }
 }
