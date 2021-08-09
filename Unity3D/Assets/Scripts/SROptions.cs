@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using HomeResVerify;
+using UnityEngine;
 
 public partial class SROptions
 {
@@ -8,6 +9,13 @@ public partial class SROptions
     public void Exist()
     {
         RoomManager.Instance.Exit();
+    }
+    
+    [Category("通用")]
+    [DisplayName("清空配置缓存")]
+    public void DeletePlayerPrefs()
+    {
+        PlayerPrefs.DeleteAll();
     }
     
     [Category("装修")]
