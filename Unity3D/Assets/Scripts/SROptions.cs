@@ -11,6 +11,13 @@ public partial class SROptions
     }
     
     [Category("装修")]
+    [DisplayName("打开Node列表")]
+    public void OpenNodeList()
+    {
+        if(null != UIManager.Instance.GetUI<UIRoom>()) UIManager.Instance.OpenUI<UINodeList>();
+    }
+    
+    [Category("装修")]
     [DisplayName("显示普通家具")]
     public void ViewNormal()
     {

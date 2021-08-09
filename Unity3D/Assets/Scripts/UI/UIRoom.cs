@@ -63,13 +63,13 @@ namespace HomeResVerify
             Dropdown animationDropdown = nodeProperity.Find("Animation").GetComponent<Dropdown>();
             animationDropdown.options.Clear();
             RoomItem item = curRoomNode.RoomItems.Find(x => x.Instance.activeSelf);
+            nodeProperity.Find("ItemName/Text").GetComponent<Text>().text = item.RoomItemCfg.id;
             if (item == null || item.animator == null)
             {
                 animationDropdown.options.Add(new Dropdown.OptionData("没有动画"));
             }
             else
             {
-                nodeProperity.Find("ItemName/Text").GetComponent<Text>().text = item.RoomItemCfg.id;
                 foreach (var clip in item.animator.runtimeAnimatorController.animationClips)
                 {
                     animationDropdown.options.Add(new Dropdown.OptionData(clip.name));
@@ -114,7 +114,7 @@ namespace HomeResVerify
         private void BindDrag(string target, UnityAction<BaseEventData> action)
         {
             GameObject obj = transform.Find(target)?.gameObject;
-            DebugUtil.Assert(obj != null,"未找到　" + target );
+            if(obj == null) Debug.LogError("未找到　" + target);
             var trigger = obj.GetComponent<EventTrigger>();
             if (trigger == null)
                 trigger = obj.AddComponent<EventTrigger>();
