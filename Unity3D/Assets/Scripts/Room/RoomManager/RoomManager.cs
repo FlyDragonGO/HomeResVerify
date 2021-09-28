@@ -1,3 +1,4 @@
+using Home.Core;
 using UnityEngine;
 
 namespace HomeResVerify
@@ -14,8 +15,11 @@ namespace HomeResVerify
             ResetCamera();
             
             room = new Room(roomId);
-
             ViewNormal();
+
+            //HomeHandleRender homeHandleRender = GameObject.Find("HomeHandleRender").GetComponent<HomeHandleRender>();
+            //homeHandleRender.HandleSceneItem(room.root);
+            //homeHandleRender.SyncCamera();
         }
 
         public void Exit()

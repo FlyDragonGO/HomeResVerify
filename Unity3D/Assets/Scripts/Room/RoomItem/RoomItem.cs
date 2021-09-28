@@ -26,6 +26,18 @@ namespace HomeResVerify
             }
 
             Instance = GameObject.Instantiate(prefab, roomNode.root.transform);
+            Collider2D[] collider2Dss = Instance.GetComponentsInChildren<Collider2D>();
+            foreach (var p in collider2Dss) p.enabled = false;
+            
+            /*
+            SpriteRenderer[] spriteRenderers = Instance.GetComponentsInChildren<SpriteRenderer>();
+            foreach (var p in spriteRenderers)
+            {
+                if (p.sharedMaterial.name.Equals("em_Home_SoftLight")) p.sharedMaterial.shader = Shader.Find("UI2/Home/Softlight");
+                else if (p.sharedMaterial.name.Equals("em_Home_ColorBurn")) p.sharedMaterial.shader = Shader.Find("UI2/Home/ColorBurn");
+                else if (p.sharedMaterial.name.Equals("em_Home_Screen")) p.sharedMaterial.shader = Shader.Find("UI2/Home/Screen");
+            }
+            */
             
             Transform oneChild = Instance.transform.Find("01");
             if (null != oneChild)

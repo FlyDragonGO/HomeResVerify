@@ -23,6 +23,8 @@ namespace HomeResVerify
     
         private void Start()
         {
+            Application.targetFrameRate = 60;
+            
             SRDebug.Init();
             SRDebug.Instance.LoadPinnedFromPlayerPrefs();
             
