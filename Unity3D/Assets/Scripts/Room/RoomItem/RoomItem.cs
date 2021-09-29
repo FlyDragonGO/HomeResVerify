@@ -49,6 +49,18 @@ namespace HomeResVerify
                 animator.runtimeAnimatorController =  ResourcesManager.Instance.LoadResource<RuntimeAnimatorController>(
                     $"Animations/{cfg.animItemCfg.controller}", false, true, cfg.animItemCfg.controller);
             }
+
+#if UNITY_EDITOR
+            var spriteRenderers = Instance.GetComponentsInChildren<SpriteRenderer>();
+            var mat = Resources.Load<Material>("Materials/SpriteCustomDefault");
+            foreach (var render in spriteRenderers)
+            {
+                if (mat)
+                {
+                    render.material = mat;    
+                }
+            }
+#endif
         }
 
         public void Destory()

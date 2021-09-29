@@ -14,8 +14,10 @@ namespace HomeResVerify
             ResetCamera();
             
             room = new Room(roomId);
-
             ViewNormal();
+            
+            if(null != UIManager.Instance.GetUI<UIRoom>()) 
+                UIManager.Instance.GetUI<UIRoom>().InitFurniturePoint();
         }
 
         public void Exit()

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DragonU3DSDK;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,7 +11,50 @@ namespace HomeResVerify
     {
         private Transform nodeProperity;
         private RoomNode curRoomNode;
+
+        #region 泡泡相关
+
+        private Transform furniturePointRoot;
+        private Transform furniturePointBase;
+
+        private Transform safeArea;
+        private List<UIFurniturePoint> furniturePointBubbles = new List<UIFurniturePoint>();
+        private bool bShowingfurniturePoint = true;
+
+        private Button btnBubbleControl;
+        private Text txtBubbleControl;
         
+        public class UIFurniturePoint
+        {
+            private RoomNode _roomNode;
+            private Transform _root;
+
+            public void Init(Transform root, RoomNode node)
+            {
+                _root = root;
+                _roomNode = node;
+                _root.GetComponent<Button>().onClick.AddListener(OnCLickBubble);
+
+            }
+
+            public void Hide()
+            {
+                _root.gameObject.SetActive(false);
+            }
+            public void Show()
+            {
+                _root.gameObject.SetActive(true);
+            }
+
+            public void OnCLickBubble()
+            {
+                if(null != UIManager.Instance.GetUI<UIRoom>()) 
+                    UIManager.Instance.GetUI<UIRoom>().OpenNodeProperty(_roomNode);
+            }
+        }
+
+        #endregion
+
         public override void Init(params object[] objs)
         {
             gameObject.AddComponent<EmptyRaycast>();
@@ -24,6 +68,9 @@ namespace HomeResVerify
             nodeProperity.Find("Change/Right").GetComponent<Button>().onClick.AddListener(() => { ChangeNodeItem(1); });
             nodeProperity.Find("Play").GetComponent<Button>().onClick.AddListener(NodeItemPlayOnClick);
             
+            btnBubbleControl = transform.Find("Root/Controller/ViewPointBubble").GetComponent<Button>();
+            txtBubbleControl = btnBubbleControl.transform.Find("Text").GetComponent<Text>();
+            
             BindDrag("Root/Controller/NodeProperity", d =>
             {
                 var data = d as PointerEventData;
@@ -32,6 +79,14 @@ namespace HomeResVerify
                     out var globalMousePos))
                     rt.position = globalMousePos;
             });
+
+            furniturePointRoot = transform.Find("Root/ScreenOrigin");
+            furniturePointBase = transform.Find("Root/ScreenOrigin/FurniturePointButton");
+            furniturePointBase.gameObject.SetActive(false);
+            
+            safeArea = transform.Find("Root/SafeArea");
+            
+            
         }
 
         private void HideOnClick()
@@ -54,7 +109,7 @@ namespace HomeResVerify
             RoomManager.Instance.ViewOld();
         }
 
-        private void OpenNodeProperty(RoomNode roomNode)
+        public void OpenNodeProperty(RoomNode roomNode)
         {
             curRoomNode = roomNode;
             nodeProperity.gameObject.SetActive(true);
@@ -141,6 +196,53 @@ namespace HomeResVerify
 
         public void OnEndDrag(PointerEventData eventData)
         {
+        }
+
+        public void InitFurniturePoint()
+        {
+            InitFurniturePointBubble();
+            ShowFurniturePointBubble();
+        }
+
+
+        private void ShowFurniturePointBubble()
+        {
+            furniturePointBubbles.ForEach((item) =>
+            {
+                item.Show();
+            });
+            bShowingfurniturePoint = true;
+            btnBubbleControl.onClick.RemoveAllListeners();
+            btnBubbleControl.onClick.AddListener(HideFurniturePointBubble);
+            txtBubbleControl.text = "隐藏泡泡";
+        }
+
+        private void HideFurniturePointBubble()
+        {
+            furniturePointBubbles.ForEach((item) =>
+            {
+                item.Hide();
+            });
+            bShowingfurniturePoint = true;
+            btnBubbleControl.onClick.RemoveAllListeners();
+            btnBubbleControl.onClick.AddListener(ShowFurniturePointBubble);
+            txtBubbleControl.text = "显示泡泡";
+        }
+        private void InitFurniturePointBubble()
+        {
+            foreach (var roomNode in RoomManager.Instance.room.RoomNodes)
+            {
+                UIFurniturePoint uiFurniturePoint = new UIFurniturePoint();
+                GameObject bubble = GameObject.Instantiate(furniturePointBase.gameObject, furniturePointRoot);
+                var screenPosition = roomNode.getDefaultScreenPos();
+
+                Vector2 position = screenPosition / UIRoot.Instance.GetScreenCanvasScale();
+                bubble.transform.localPosition = new Vector3(position.x,position.y,bubble.transform.localPosition.z);
+                UIRoot.Instance.FitUIPos(bubble, safeArea.gameObject);
+                bubble.gameObject.SetActive(true);
+                uiFurniturePoint.Init(bubble.transform,roomNode);
+                furniturePointBubbles.Add(uiFurniturePoint);
+            }
         }
     }
 }

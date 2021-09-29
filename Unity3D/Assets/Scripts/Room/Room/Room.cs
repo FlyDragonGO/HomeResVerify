@@ -16,6 +16,8 @@ namespace HomeResVerify
         
         private List<GameObject> cleanInstances = new List<GameObject>();
         
+        public Camera _camera;
+
         public Room(int roomId)
         {
             RoomId = roomId;
@@ -27,8 +29,24 @@ namespace HomeResVerify
             GameObject backPrefab = ResourcesManager.Instance.LoadResource<GameObject>(backPath);
             if (null == backPrefab) Debug.LogError($"找不到 : {backPath}");
             else GameObject.Instantiate(backPrefab, root.transform);
+            
+            //编辑器模式指定材质
+#if UNITY_EDITOR
+            var _bgSprites = backPrefab.GetComponentsInChildren<SpriteRenderer>();
+            var mat = Resources.Load<Material>("Materials/SpriteCustomDefault");
+            if (mat)
+            {
+                foreach (var sprite in  _bgSprites)
+                {
+                    sprite.material = mat;
+                }    
+            }
+#endif
 
-            foreach (var node in HomeViewConfig.roomNodes) RoomNodes.Add(new RoomNode(this, node));
+            foreach (var node in HomeViewConfig.roomNodes) 
+                RoomNodes.Add(new RoomNode(this, node));
+            
+            _camera = Camera.main;
         }
 
         public void Destory()
@@ -97,6 +115,13 @@ namespace HomeResVerify
             if (cleanInstances.Count == 0) return;
             foreach (var p in cleanInstances) GameObject.DestroyImmediate(p);
             cleanInstances.Clear();
+        }
+        
+        public RoomNode GetNode(long nodeID)
+        {
+            RoomNode roomNode = RoomNodes.Find(node => node.RoomNodeCfg.id == nodeID);
+           
+            return roomNode;
         }
     }
 }
